@@ -1,0 +1,169 @@
+ANÁLISE EXPLORATÓRIA — BREAST CANCER (UCI Machine Learning Repository)
+==============================================================================
+Arquivo analisado: breast-cancer.csv
+Referência: Zwitter, M. & Soklic, M. (1988). Breast Cancer [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C51P4M
+
+1. DIMENSÕES
+   Registros: 286
+   Colunas: 10 (9 atributos preditores + variável-alvo 'Class')
+
+2. TIPOS DE DADOS
+   Tipos lidos do CSV (todas as colunas como texto) e tipo adotado no modelo:
+   age          lido=object  adotado=categórico nominal (one-hot)   | Faixa etária da paciente no diagnóstico (intervalos de 10 anos)
+   menopause    lido=object  adotado=categórico nominal (one-hot)   | Status menopausal: premeno, lt40 (antes dos 40) ou ge40 (40 ou mais)
+   tumor-size   lido=object  adotado=categórico nominal (one-hot)   | Diâmetro do tumor em mm (intervalos de 5 mm)
+   inv-nodes    lido=object  adotado=categórico nominal (one-hot)   | Número de linfonodos axilares com metástase (intervalos)
+   node-caps    lido=object  adotado=categórico nominal (one-hot)   | Penetração do tumor na cápsula do linfonodo (yes/no)
+   deg-malig    lido=object  adotado=ordinal numérico (1 < 2 < 3)   | Grau histológico de malignidade (1, 2 ou 3; ordinal)
+   breast       lido=object  adotado=categórico nominal (one-hot)   | Mama acometida (left/right)
+   breast-quad  lido=object  adotado=categórico nominal (one-hot)   | Quadrante da mama acometido
+   irradiat     lido=object  adotado=categórico nominal (one-hot)   | Paciente submetida à radioterapia (yes/no)
+   Class        lido=object  adotado=alvo binário (categórico)      | Ocorrência de recidiva (recurrence-events) ou não (no-recurrence-events)
+   Observação: age, tumor-size e inv-nodes são intervalos ordenados, mas foram tratados como nominais (one-hot), conforme a especificação do projeto.
+
+3. DISTRIBUIÇÃO DAS CLASSES
+                      registros  percentual
+Class                                      
+no-recurrence-events        201       70.28
+recurrence-events            85       29.72
+
+   Razão de desbalanceamento: 2.36 negativos para cada positivo.
+   Consequência: um classificador trivial que sempre prevê 'no-recurrence-events' atinge 70.28% de acurácia com recall 0 para recurrence-events.
+   Por isso a acurácia é comparada com essa referência e acompanhada de precision, recall, F1 e matriz de confusão da classe minoritária. As divisões treino/teste e da validação cruzada são estratificadas para preservar a proporção.
+
+4. VALORES AUSENTES E DESCONHECIDOS
+   Células vazias / NaN no arquivo: 0
+   Valores desconhecidos '?': 9 no total
+     - node-caps: 8 (2.80% dos registros)
+     - breast-quad: 1 (0.35% dos registros)
+   Registros com ao menos um '?': 9
+   Distribuição das classes nesses registros: no-recurrence-events=5, recurrence-events=4
+   Tratamento: '?' é convertido em NaN e imputado pela moda dentro do pipeline (ajustado só no treino); nenhum registro é excluído.
+
+5. REGISTROS DUPLICADOS
+   Duplicações completas (todas as 10 colunas): 14
+   Registros envolvidos em grupos completamente duplicados: 28
+   Duplicações considerando apenas os 9 preditores: 20
+   Combinações de preditores associadas a classes diferentes: 6 (13 registros)
+   Combinações conflitantes:
+  age menopause tumor-size inv-nodes node-caps deg-malig breast breast-quad irradiat                Class  registros
+30-39   premeno        0-4       0-2        no         2  right     central       no no-recurrence-events          1
+30-39   premeno        0-4       0-2        no         2  right     central       no    recurrence-events          1
+30-39   premeno      30-34       0-2        no         2   left     left_up       no no-recurrence-events          1
+30-39   premeno      30-34       0-2        no         2   left     left_up       no    recurrence-events          1
+40-49   premeno      20-24       0-2        no         2   left    left_low       no no-recurrence-events          1
+40-49   premeno      20-24       0-2        no         2   left    left_low       no    recurrence-events          1
+40-49   premeno      25-29       0-2        no         2  right    left_low       no no-recurrence-events          1
+40-49   premeno      25-29       0-2        no         2  right    left_low       no    recurrence-events          2
+40-49   premeno      30-34       0-2        no         3  right    right_up       no no-recurrence-events          1
+40-49   premeno      30-34       0-2        no         3  right    right_up       no    recurrence-events          1
+50-59   premeno      25-29       0-2        no         1  right     left_up       no no-recurrence-events          1
+50-59   premeno      25-29       0-2        no         1  right     left_up       no    recurrence-events          1
+
+   Decisão: os duplicados foram MANTIDOS. Os atributos são faixas discretas, o que
+   torna plausível que pacientes distintas tenham perfis idênticos; removê-los
+   alteraria a distribuição original sem evidência de erro de registro. As
+   combinações conflitantes mostram que parte do erro é irredutível: nenhum
+   classificador baseado apenas nesses atributos pode acertar todos esses casos.
+   Ressalva: cópias idênticas podem cair no treino e no teste ao mesmo tempo, o
+   que pode tornar as estimativas ligeiramente otimistas.
+
+6. FREQUÊNCIA DE CADA CATEGORIA E RELAÇÃO COM A VARIÁVEL-ALVO
+   (contagens por classe, % do total e taxa de recorrência por categoria; '?' omitido)
+
+   [age] — Faixa etária da paciente no diagnóstico (intervalos de 10 anos)
+Class  no-recurrence-events  recurrence-events  total  %_total  taxa_recorrencia_%
+20-29                     1                  0      1      0.3                 0.0
+30-39                    21                 15     36     12.6                41.7
+40-49                    63                 27     90     31.5                30.0
+50-59                    71                 25     96     33.6                26.0
+60-69                    40                 17     57     19.9                29.8
+70-79                     5                  1      6      2.1                16.7
+   Categorias documentadas pela UCI ausentes na base: ['10-19', '80-89', '90-99']
+   Categorias raras (< 10 registros): ['20-29', '70-79']
+
+   [menopause] — Status menopausal: premeno, lt40 (antes dos 40) ou ge40 (40 ou mais)
+Class    no-recurrence-events  recurrence-events  total  %_total  taxa_recorrencia_%
+lt40                        5                  2      7      2.4                28.6
+ge40                       94                 35    129     45.1                27.1
+premeno                   102                 48    150     52.4                32.0
+   Categorias raras (< 10 registros): ['lt40']
+
+   [tumor-size] — Diâmetro do tumor em mm (intervalos de 5 mm)
+Class  no-recurrence-events  recurrence-events  total  %_total  taxa_recorrencia_%
+0-4                       7                  1      8      2.8                12.5
+5-9                       4                  0      4      1.4                 0.0
+10-14                    27                  1     28      9.8                 3.6
+15-19                    23                  7     30     10.5                23.3
+20-24                    34                 16     50     17.5                32.0
+25-29                    36                 18     54     18.9                33.3
+30-34                    35                 25     60     21.0                41.7
+35-39                    12                  7     19      6.6                36.8
+40-44                    16                  6     22      7.7                27.3
+45-49                     2                  1      3      1.0                33.3
+50-54                     5                  3      8      2.8                37.5
+   Categorias documentadas pela UCI ausentes na base: ['55-59']
+   Categorias raras (< 10 registros): ['0-4', '5-9', '45-49', '50-54']
+
+   [inv-nodes] — Número de linfonodos axilares com metástase (intervalos)
+Class  no-recurrence-events  recurrence-events  total  %_total  taxa_recorrencia_%
+0-2                     167                 46    213     74.5                21.6
+3-5                      19                 17     36     12.6                47.2
+6-8                       7                 10     17      5.9                58.8
+9-11                      4                  6     10      3.5                60.0
+12-14                     1                  2      3      1.0                66.7
+15-17                     3                  3      6      2.1                50.0
+24-26                     0                  1      1      0.3               100.0
+   Categorias documentadas pela UCI ausentes na base: ['18-20', '21-23', '27-29', '30-32', '33-35', '36-39']
+   Categorias raras (< 10 registros): ['12-14', '15-17', '24-26']
+
+   [node-caps] — Penetração do tumor na cápsula do linfonodo (yes/no)
+Class  no-recurrence-events  recurrence-events  total  %_total  taxa_recorrencia_%
+no                      171                 51    222     79.9                23.0
+yes                      25                 31     56     20.1                55.4
+
+   [deg-malig] — Grau histológico de malignidade (1, 2 ou 3; ordinal)
+Class  no-recurrence-events  recurrence-events  total  %_total  taxa_recorrencia_%
+1                        59                 12     71     24.8                16.9
+2                       102                 28    130     45.5                21.5
+3                        40                 45     85     29.7                52.9
+
+   [breast] — Mama acometida (left/right)
+Class  no-recurrence-events  recurrence-events  total  %_total  taxa_recorrencia_%
+left                    103                 49    152     53.1                32.2
+right                    98                 36    134     46.9                26.9
+
+   [breast-quad] — Quadrante da mama acometido
+Class      no-recurrence-events  recurrence-events  total  %_total  taxa_recorrencia_%
+central                      17                  4     21      7.4                19.0
+left_low                     75                 35    110     38.6                31.8
+left_up                      71                 26     97     34.0                26.8
+right_low                    18                  6     24      8.4                25.0
+right_up                     20                 13     33     11.6                39.4
+
+   [irradiat] — Paciente submetida à radioterapia (yes/no)
+Class  no-recurrence-events  recurrence-events  total  %_total  taxa_recorrencia_%
+no                      164                 54    218     76.2                24.8
+yes                      37                 31     68     23.8                45.6
+
+7. ASSOCIAÇÃO DE CADA ATRIBUTO COM A CLASSE (qui-quadrado de independência)
+   atributo    qui2  gl  p_valor  v_cramer  celulas_esperado_<5_%
+  deg-malig 31.6950   2   0.0000    0.3329                 0.0000
+  inv-nodes 28.7997   6   0.0001    0.3173                50.0000
+  node-caps 21.0215   1   0.0000    0.2750                 0.0000
+ tumor-size 17.9157  10   0.0564    0.2503                27.2727
+   irradiat  9.7806   1   0.0018    0.1849                 0.0000
+        age  3.9977   5   0.5497    0.1182                33.3333
+breast-quad  3.5150   4   0.4756    0.1111                 0.0000
+  menopause  0.7915   2   0.6732    0.0526                33.3333
+     breast  0.7433   1   0.3886    0.0510                 0.0000
+   Atenção: com categorias raras, várias tabelas têm células com frequência
+   esperada < 5, o que torna o p-valor aproximado. O teste é descritivo e não foi
+   usado para selecionar atributos (todos os nove são mantidos nos modelos).
+
+8. PRINCIPAIS CONCLUSÕES
+   * Base pequena (286 registros) e desbalanceada (70.28% / 29.72%).
+   * A referência majoritária já obtém 70.28% de acurácia: ganhos reais precisam superá-la e ter recall não nulo na classe minoritária.
+   * Atributos com associação mais forte com recorrência (maior V de Cramér): deg-malig, inv-nodes, node-caps, tumor-size.
+   * Poucos valores desconhecidos (9 células em 9 registros) — imputação pela moda é adequada.
+   * Duplicados e combinações conflitantes limitam o desempenho alcançável.

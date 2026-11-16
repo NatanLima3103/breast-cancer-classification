@@ -1,0 +1,114 @@
+{
+  "generated_at": "2026-11-12T20:10:19+00:00",
+  "random_state": 42,
+  "test_size": 0.2,
+  "cross_validation": {
+    "strategy": "RepeatedStratifiedKFold",
+    "n_splits": 5,
+    "n_repeats": 10,
+    "n_folds_total": 50
+  },
+  "n_train": 228,
+  "n_test": 58,
+  "train_class_distribution": {
+    "no-recurrence-events": 160,
+    "recurrence-events": 68
+  },
+  "test_class_distribution": {
+    "no-recurrence-events": 41,
+    "recurrence-events": 17
+  },
+  "positive_class": "recurrence-events",
+  "selection_criterion": "Maior acurácia média na validação cruzada (somente dados de treino); modelos a até 0.01 desta acurácia são considerados empatados e o desempate é o maior recall médio de recurrence-events.",
+  "selected_model": "Decision Tree",
+  "selection_rationale": "'Decision Tree' obteve a maior acurácia média na validação cruzada (0.7708) e nenhum outro modelo ficou a até 0.010 dela; o critério secundário (recall de recurrence-events) não foi necessário.",
+  "best_params": {
+    "criterion": "gini",
+    "max_depth": 2,
+    "min_samples_leaf": 1,
+    "sampler": "passthrough"
+  },
+  "classifier": "DecisionTreeClassifier(max_depth=2, random_state=42)",
+  "cv_metrics": {
+    "accuracy_mean": 0.7708309178743962,
+    "accuracy_std": 0.050745511233142186,
+    "balanced_accuracy_mean": 0.6493784340659342,
+    "balanced_accuracy_std": 0.0676564632397935,
+    "precision_mean": 0.7583708513708514,
+    "precision_std": 0.1734360992973209,
+    "recall_mean": 0.3481318681318682,
+    "recall_std": 0.12331589829233673,
+    "f1_mean": 0.4670354239469867,
+    "f1_std": 0.1391233801442513
+  },
+  "train_accuracy_resubstitution": 0.7763157894736842,
+  "test_set_usage": "O conjunto de teste foi usado somente após a seleção, e apenas para avaliar o modelo vencedor e a referência majoritária (DummyClassifier) definida previamente. Os demais candidatos não foram avaliados no teste (colunas test_* vazias).",
+  "models_evaluated_on_test": [
+    "Decision Tree",
+    "Baseline (classe majoritária)"
+  ],
+  "test_metrics": {
+    "accuracy": 0.7068965517241379,
+    "balanced_accuracy": 0.5516499282639885,
+    "precision": 0.5,
+    "recall": 0.17647058823529413,
+    "f1": 0.2608695652173913
+  },
+  "test_confusion_matrix": {
+    "labels": [
+      "no-recurrence-events",
+      "recurrence-events"
+    ],
+    "matrix": [
+      [
+        38,
+        3
+      ],
+      [
+        14,
+        3
+      ]
+    ]
+  },
+  "baseline": {
+    "model": "Baseline (classe majoritária)",
+    "cv_accuracy_mean": 0.7018357487922705,
+    "cv_accuracy_std": 0.00757330162019922,
+    "test_metrics": {
+      "accuracy": 0.7068965517241379,
+      "balanced_accuracy": 0.5,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "test_confusion_matrix": [
+      [
+        41,
+        0
+      ],
+      [
+        17,
+        0
+      ]
+    ]
+  },
+  "model_path": "models/best_model.joblib",
+  "features": [
+    "age",
+    "menopause",
+    "tumor-size",
+    "inv-nodes",
+    "node-caps",
+    "deg-malig",
+    "breast",
+    "breast-quad",
+    "irradiat"
+  ],
+  "versions": {
+    "python": "3.14.4",
+    "scikit-learn": "1.9.1",
+    "pandas": "3.1.1",
+    "numpy": "2.5.4",
+    "joblib": "1.6.0"
+  }
+}

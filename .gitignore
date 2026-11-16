@@ -1,0 +1,22 @@
+# Ambientes virtuais
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Ferramentas
+.pytest_cache/
+.ipynb_checkpoints/
+.vscode/
+.idea/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Observação: models/best_model.joblib e reports/ são mantidos versionáveis
+# de propósito, pois documentam os resultados descritos no README.

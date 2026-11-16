@@ -1,0 +1,81 @@
+RELATÓRIO DE CLASSIFICAÇÃO — MODELO SELECIONADO
+======================================================================
+Modelo selecionado: Decision Tree
+Hiperparâmetros: {"criterion": "gini", "max_depth": 2, "min_samples_leaf": 1, "sampler": "passthrough"}
+Semente aleatória: 42
+Validação: RepeatedStratifiedKFold (50 ajustes por configuração)
+
+Justificativa da seleção (somente validação cruzada no treino):
+  'Decision Tree' obteve a maior acurácia média na validação cruzada (0.7708) e nenhum outro modelo ficou a até 0.010 dela; o critério secundário (recall de recurrence-events) não foi necessário.
+
+Validação cruzada (treino):
+  Acurácia média: 0.7708 (desvio-padrão 0.0507)
+  Recall recurrence-events médio: 0.3481 (desvio-padrão 0.1233)
+  Precision média: 0.7584 | F1 médio: 0.4670
+
+Conjunto de teste (58 registros), usado somente após a seleção:
+  Accuracy:          0.7069
+  Balanced accuracy: 0.5516
+  Precision (recurrence-events): 0.5000
+  Recall    (recurrence-events): 0.1765
+  F1-score  (recurrence-events): 0.2609
+
+Relatório de classificação completo (teste):
+                      precision    recall  f1-score   support
+
+no-recurrence-events     0.7308    0.9268    0.8172        41
+   recurrence-events     0.5000    0.1765    0.2609        17
+
+            accuracy                         0.7069        58
+           macro avg     0.6154    0.5516    0.5390        58
+        weighted avg     0.6631    0.7069    0.6541        58
+
+Matriz de confusão (teste):
+                            prev: no-recurrence-events  prev: recurrence-events
+real: no-recurrence-events                          38                        3
+real: recurrence-events                             14                        3
+
+Referência previamente definida (DummyClassifier, sempre prevê no-recurrence-events; nunca selecionável):
+  Acurácia CV: 0.7018 (desvio-padrão 0.0076)
+  Teste: accuracy=0.7069 | balanced accuracy=0.5000 | precision=0.0000 | recall=0.0000 | f1=0.0000
+  Matriz de confusão da referência (teste):
+                            prev: no-recurrence-events  prev: recurrence-events
+real: no-recurrence-events                          41                        0
+real: recurrence-events                             17                        0
+  Ganho do modelo selecionado sobre a referência: CV +0.0690 | teste +0.0000
+
+Comparação dos algoritmos (ordenada pela acurácia média de validação cruzada):
+                        model  cv_accuracy_mean  cv_accuracy_std  cv_recall_mean  cv_f1_mean  test_accuracy  test_precision  test_recall  test_f1
+                Decision Tree            0.7708           0.0507          0.3481      0.4670         0.7069          0.5000       0.1765   0.2609
+                Random Forest            0.7506           0.0413          0.3253      0.4279              -               -            -        -
+                          KNN            0.7453           0.0427          0.2784      0.3873              -               -            -        -
+                          SVC            0.7312           0.0335          0.2437      0.3434              -               -            -        -
+         Gaussian Naive Bayes            0.7295           0.0408          0.2481      0.3460              -               -            -        -
+          Logistic Regression            0.7185           0.0393          0.2008      0.2893              -               -            -        -
+Baseline (classe majoritária)            0.7018           0.0076          0.0000      0.0000         0.7069          0.0000       0.0000   0.0000
+
+Balanceamento: melhor candidato sem SMOTE x com SMOTE, por algoritmo
+(validação cruzada no treino; o SMOTE é aplicado só no treino de cada fold):
+               model balanceamento  cv_accuracy_mean  cv_accuracy_std  cv_recall_mean  chosen_by_search
+ Logistic Regression     sem SMOTE            0.7185           0.0393          0.2008              True
+ Logistic Regression     com SMOTE            0.6834           0.0541          0.5529             False
+       Decision Tree     sem SMOTE            0.7708           0.0507          0.3481              True
+       Decision Tree     com SMOTE            0.7123           0.0568          0.4082             False
+       Random Forest     sem SMOTE            0.7506           0.0413          0.3253              True
+       Random Forest     com SMOTE            0.7331           0.0521          0.4125             False
+                 SVC     sem SMOTE            0.7312           0.0335          0.2437              True
+                 SVC     com SMOTE            0.7150           0.0534          0.4702             False
+                 KNN     sem SMOTE            0.7453           0.0427          0.2784              True
+                 KNN     com SMOTE            0.6970           0.0480          0.5032             False
+Gaussian Naive Bayes     sem SMOTE            0.7295           0.0408          0.2481              True
+Gaussian Naive Bayes     com SMOTE            0.6988           0.0570          0.6013             False
+
+Observações:
+  * A comparação e a seleção usam exclusivamente a validação cruzada no treino.
+  * O conjunto de teste foi usado somente após a seleção, e apenas para avaliar o
+    modelo vencedor e a referência majoritária definida previamente. Os demais
+    candidatos NÃO foram avaliados no teste: suas colunas test_* aparecem como '-'
+    (vazias no CSV).
+  * A acurácia isolada é enganosa com 70% de registros negativos: observe o recall
+    e o F1 de recurrence-events e a comparação com a referência majoritária.
+  * Acurácia de treino por ressubstituição do modelo selecionado: 0.7763 (não indica generalização).

@@ -1,0 +1,13 @@
+model,smote,n_candidates,cv_accuracy_mean,cv_accuracy_std,cv_recall_mean,cv_recall_std,best_params,chosen_by_search
+Logistic Regression,False,8,0.7185,0.0393,0.2008,0.0951,"{""C"": 0.1, ""class_weight"": null}",True
+Logistic Regression,True,8,0.6834,0.0541,0.5529,0.1188,"{""C"": 0.01, ""class_weight"": null}",False
+Decision Tree,False,30,0.7708,0.0507,0.3481,0.1233,"{""criterion"": ""gini"", ""max_depth"": 2, ""min_samples_leaf"": 1}",True
+Decision Tree,True,30,0.7123,0.0568,0.4082,0.1495,"{""criterion"": ""entropy"", ""max_depth"": 2, ""min_samples_leaf"": 1}",False
+Random Forest,False,14,0.7506,0.0413,0.3253,0.1199,"{""n_estimators"": 100, ""min_samples_leaf"": 5, ""max_features"": 0.5, ""max_depth"": null, ""class_weight"": null}",True
+Random Forest,True,16,0.7331,0.0521,0.4125,0.1174,"{""n_estimators"": 100, ""min_samples_leaf"": 1, ""max_features"": ""sqrt"", ""max_depth"": 8, ""class_weight"": null}",False
+SVC,False,24,0.7312,0.0335,0.2437,0.0932,"{""C"": 1.0, ""class_weight"": null, ""gamma"": ""scale"", ""kernel"": ""rbf""}",True
+SVC,True,24,0.7150,0.0534,0.4702,0.1325,"{""C"": 0.01, ""class_weight"": null, ""kernel"": ""linear""}",False
+KNN,False,28,0.7453,0.0427,0.2784,0.1048,"{""n_neighbors"": 15, ""p"": 1, ""weights"": ""distance""}",True
+KNN,True,28,0.6970,0.0480,0.5032,0.1077,"{""n_neighbors"": 3, ""p"": 1, ""weights"": ""uniform""}",False
+Gaussian Naive Bayes,False,10,0.7295,0.0408,0.2481,0.0983,"{""var_smoothing"": 1.0}",True
+Gaussian Naive Bayes,True,10,0.6988,0.0570,0.6013,0.1241,"{""var_smoothing"": 1.0}",False
